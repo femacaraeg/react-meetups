@@ -16,7 +16,7 @@ const DUMMY_MEETUPS = [
     title: 'A Second Meetup',
     image:
       'https://upload.wikimedia.org/wikipedia/commons/5/5e/El_Nido_Palawan_2.jpg',
-    address: 'Some address, 23232, Some City, Some Country',
+    address: 'Some address, 23232322, Some City, Some Country',
     description: 'This is a second meetup!',
   },
 ];
