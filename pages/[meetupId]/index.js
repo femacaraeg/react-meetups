@@ -1,33 +1,42 @@
 import React from 'react';
+import { MongoClient, ObjectId } from 'mongodb';
 
 import MeetupDetail from '../../components/meetups/MeetupDetail';
 
-function MeetupDetails() {
+function MeetupDetails(props) {
+  const { meetupData } = props;
+
   return (
     <MeetupDetail
-      image='https://upload.wikimedia.org/wikipedia/commons/5/5e/El_Nido_Palawan_2.jpg'
-      title='A First Meetup'
-      address='Some Street 5, Some City'
-      description='This is a first meetup'
+      image={meetupData.image}
+      title={meetupData.title}
+      address={meetupData.address}
+      description={meetupData.description}
     />
   );
 }
 
 export async function getStaticPaths() {
+  //  fetch data for a single meetup
+  const client = await MongoClient.connect(
+    'mongodb+srv://master:R8miijHH.Kc4jYe@cluster0.sor9xfy.mongodb.net/MeetupsDatabase?retryWrites=true&w=majority'
+  );
+
+  const db = client.db();
+
+  const meetupsCollection = db.collection('meetups');
+
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+
+  client.close();
+
   return {
     fallback: false,
-    paths: [
-      {
-        params: {
-          meetupId: 'm1',
-        },
+    paths: meetups.map((meetup) => ({
+      params: {
+        meetupId: meetup._id.toString(),
       },
-      {
-        params: {
-          meetupId: 'm2',
-        },
-      },
-    ],
+    })),
   };
 }
 
@@ -36,18 +45,30 @@ export async function getStaticProps(context) {
 
   const meetupId = context.params.meetupId;
 
-  console.log(meetupId);
+  const client = await MongoClient.connect(
+    'mongodb+srv://master:R8miijHH.Kc4jYe@cluster0.sor9xfy.mongodb.net/MeetupsDatabase?retryWrites=true&w=majority'
+  );
+
+  const db = client.db();
+
+  const meetupsCollection = db.collection('meetups');
+
+  const selectedMeetup = await meetupsCollection.findOne({
+    _id: ObjectId(meetupId),
+  });
+
+  client.close();
+
+  const formattedMeetup = {
+    ...selectedMeetup,
+    id: selectedMeetup._id.toString(),
+  };
+
+  delete formattedMeetup._id;
 
   return {
     props: {
-      meetupData: {
-        id: meetupId,
-        image:
-          'https://upload.wikimedia.org/wikipedia/commons/5/5e/El_Nido_Palawan_2.jpg',
-        title: 'A First Meetup',
-        address: 'Some Street 5, Some City',
-        description: 'This is a first meetup',
-      },
+      meetupData: formattedMeetup,
     },
   };
 }
