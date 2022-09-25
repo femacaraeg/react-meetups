@@ -1,5 +1,6 @@
 import React from 'react';
 import { MongoClient, ObjectId } from 'mongodb';
+import Head from 'next/head';
 
 import MeetupDetail from '../../components/meetups/MeetupDetail';
 
@@ -7,12 +8,18 @@ function MeetupDetails(props) {
   const { meetupData } = props;
 
   return (
-    <MeetupDetail
-      image={meetupData.image}
-      title={meetupData.title}
-      address={meetupData.address}
-      description={meetupData.description}
-    />
+    <React.Fragment>
+      <Head>
+        <title>{meetupData.title}</title>
+        <meta name='description' content={meetupData.description} />
+      </Head>
+      <MeetupDetail
+        image={meetupData.image}
+        title={meetupData.title}
+        address={meetupData.address}
+        description={meetupData.description}
+      />
+    </React.Fragment>
   );
 }
 
