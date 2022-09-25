@@ -9,7 +9,7 @@ function NewMeetupForm(props) {
   const addressInputRef = useRef();
   const descriptionInputRef = useRef();
 
-  function submitHandler(event) {
+  const submitHandler = (event) => {
     event.preventDefault();
 
     const enteredTitle = titleInputRef.current.value;
@@ -25,7 +25,7 @@ function NewMeetupForm(props) {
     };
 
     props.onAddMeetup(meetupData);
-  }
+  };
 
   return (
     <Card>
@@ -52,7 +52,7 @@ function NewMeetupForm(props) {
           ></textarea>
         </div>
         <div className={classes.actions}>
-          <button>Add Meetup</button>
+          <button type='submit'>Add Meetup</button>
         </div>
       </form>
     </Card>
